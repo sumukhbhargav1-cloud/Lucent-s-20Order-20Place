@@ -1,30 +1,89 @@
-import "./global.css";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./hooks/useAuth";
+import { CartProvider } from "./hooks/useCart";
+import Layout from "./components/Layout";
 
-import { Toaster } from "@/components/ui/toaster";
-import { createRoot } from "react-dom/client";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// Pages
+import Login from "./pages/Login";
 import Index from "./pages/Index";
+import Orders from "./pages/Orders";
+import OrderDetail from "./pages/OrderDetail";
+import Audit from "./pages/Audit";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Protected Route Component
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useAuth();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
-createRoot(document.getElementById("root")!).render(<App />);
+  return <Layout>{children}</Layout>;
+}
+
+// App Router
+function AppRouter() {
+  const { isAuthenticated } = useAuth();
+
+  return (
+    <Routes>
+      {!isAuthenticated ? (
+        <Route path="/login" element={<Login />} />
+      ) : null}
+
+      {isAuthenticated && (
+        <>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <Orders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders/:id"
+            element={
+              <ProtectedRoute>
+                <OrderDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/audit"
+            element={
+              <ProtectedRoute>
+                <Audit />
+              </ProtectedRoute>
+            }
+          />
+        </>
+      )}
+
+      {!isAuthenticated && <Route path="*" element={<Navigate to="/login" replace />} />}
+      {isAuthenticated && <Route path="*" element={<NotFound />} />}
+    </Routes>
+  );
+}
+
+// Main App Component
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <CartProvider>
+          <AppRouter />
+        </CartProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}
