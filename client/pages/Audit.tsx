@@ -9,7 +9,7 @@ export default function Audit() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
+    new Date().toISOString().split("T")[0],
   );
   const [exporting, setExporting] = useState(false);
 
@@ -195,7 +195,9 @@ export default function Audit() {
 
           {/* Detailed Orders Table */}
           <div className="border rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-4">Orders for {selectedDate}</h2>
+            <h2 className="text-xl font-bold mb-4">
+              Orders for {selectedDate}
+            </h2>
             {orders.length === 0 ? (
               <p className="text-muted-foreground text-center py-8">
                 No orders for this date
@@ -234,8 +236,8 @@ export default function Audit() {
                               order.status === "Completed"
                                 ? "bg-gray-100 text-gray-800"
                                 : order.status === "New"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-yellow-100 text-yellow-800"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
                             {order.status}
@@ -247,8 +249,8 @@ export default function Audit() {
                               order.payment_status === "Paid"
                                 ? "bg-green-100 text-green-800"
                                 : order.payment_status === "Partial"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
                             }`}
                           >
                             {order.payment_status}

@@ -15,7 +15,10 @@ async function initializeDatabaseImpl() {
     dbInstance = new Database(DB_FILE);
     return dbInstance;
   } catch (err: any) {
-    console.error("Warning: Could not initialize SQLite database:", err.message);
+    console.error(
+      "Warning: Could not initialize SQLite database:",
+      err.message,
+    );
     return null;
   }
 }
@@ -33,7 +36,9 @@ export async function ensureDbInitialized() {
 // Sync getter for routes
 export function getDb() {
   if (!dbInstance) {
-    throw new Error("Database not initialized yet. Call ensureDbInitialized() first.");
+    throw new Error(
+      "Database not initialized yet. Call ensureDbInitialized() first.",
+    );
   }
   return dbInstance;
 }
@@ -42,7 +47,7 @@ export { getDb as db };
 
 export async function initializeDatabase() {
   const db = await ensureDbInitialized();
-  
+
   if (!db) {
     console.warn("Database not available, skipping initialization");
     return;
@@ -149,7 +154,7 @@ function seedSampleMenu(db: any) {
   try {
     const insert = db.prepare(
       `INSERT INTO menus (id, version, item_key, name, description, price, category, image) 
-       VALUES (@id, @version, @item_key, @name, @description, @price, @category, @image)`
+       VALUES (@id, @version, @item_key, @name, @description, @price, @category, @image)`,
     );
 
     const insertMany = db.transaction((rows: any[]) => {

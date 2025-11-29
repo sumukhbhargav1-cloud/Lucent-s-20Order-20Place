@@ -17,7 +17,7 @@ import {
 
 export const createOrder: RequestHandler<any, Order, CreateOrderRequest> = (
   req,
-  res
+  res,
 ) => {
   const { guest_name, room_no, notes, items, menu_version } = req.body;
 
@@ -31,7 +31,7 @@ export const createOrder: RequestHandler<any, Order, CreateOrderRequest> = (
 
     db.prepare(
       `INSERT INTO orders (id, order_no, created_at, updated_at, guest_name, room_no, notes, source, menu_version, status, payment_status, history, total) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     ).run(
       id,
       order_no,
@@ -45,12 +45,12 @@ export const createOrder: RequestHandler<any, Order, CreateOrderRequest> = (
       "New",
       "Not Paid",
       JSON.stringify(history),
-      total
+      total,
     );
 
     const insertItem = db.prepare(
       `INSERT INTO order_items (id, order_id, item_key, name, qty, price) 
-       VALUES (?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?)`,
     );
 
     const saveItems = db.transaction((itemsToSave: any[]) => {
@@ -61,7 +61,7 @@ export const createOrder: RequestHandler<any, Order, CreateOrderRequest> = (
           it.item_key || "",
           it.name,
           it.qty,
-          it.price
+          it.price,
         );
       }
     });
@@ -71,7 +71,9 @@ export const createOrder: RequestHandler<any, Order, CreateOrderRequest> = (
     const order = getOrderById(id);
     res.json(order);
   } catch (err: any) {
-    res.status(500).json({ error: "Failed to create order", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to create order", details: err.message });
   }
 };
 
@@ -91,12 +93,14 @@ export const listOrders: RequestHandler = (req, res) => {
       date as string | undefined,
       status as string | undefined,
       room_no as string | undefined,
-      search as string | undefined
+      search as string | undefined,
     );
 
     res.json(orders);
   } catch (err: any) {
-    res.status(500).json({ error: "Failed to list orders", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to list orders", details: err.message });
   }
 };
 
@@ -116,7 +120,7 @@ export const addItemsToOrder: RequestHandler<
 
     const insertItem = db.prepare(
       `INSERT INTO order_items (id, order_id, item_key, name, qty, price) 
-       VALUES (?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?)`,
     );
 
     const saveItems = db.transaction((itemsToSave: any[]) => {
@@ -127,7 +131,7 @@ export const addItemsToOrder: RequestHandler<
           it.item_key || "",
           it.name,
           it.qty,
-          it.price
+          it.price,
         );
       }
     });
@@ -141,20 +145,23 @@ export const addItemsToOrder: RequestHandler<
     history = addHistoryEntry(history, `Added ${items.length} items`);
 
     db.prepare(
-      "UPDATE orders SET total = ?, updated_at = ?, history = ?, status = ? WHERE id = ?"
+      "UPDATE orders SET total = ?, updated_at = ?, history = ?, status = ? WHERE id = ?",
     ).run(newTotal, now, JSON.stringify(history), "Updated", id);
 
     const updatedOrder = getOrderById(id);
     res.json(updatedOrder);
   } catch (err: any) {
-    res.status(500).json({ error: "Failed to add items", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to add items", details: err.message });
   }
 };
 
-export const updateOrder: RequestHandler<{ id: string }, Order, UpdateOrderRequest> = (
-  req,
-  res
-) => {
+export const updateOrder: RequestHandler<
+  { id: string },
+  Order,
+  UpdateOrderRequest
+> = (req, res) => {
   const id = req.params.id;
   const { status, payment_status, requested_time, notes } = req.body;
 
@@ -177,7 +184,7 @@ export const updateOrder: RequestHandler<{ id: string }, Order, UpdateOrderReque
     db.prepare(
       `UPDATE orders SET status = COALESCE(?, status), payment_status = COALESCE(?, payment_status), 
        requested_time = COALESCE(?, requested_time), notes = COALESCE(?, notes), 
-       updated_at = ?, history = ? WHERE id = ?`
+       updated_at = ?, history = ? WHERE id = ?`,
     ).run(
       status || null,
       payment_status || null,
@@ -185,12 +192,14 @@ export const updateOrder: RequestHandler<{ id: string }, Order, UpdateOrderReque
       notes || null,
       now,
       JSON.stringify(history),
-      id
+      id,
     );
 
     const updatedOrder = getOrderById(id);
     res.json(updatedOrder);
   } catch (err: any) {
-    res.status(500).json({ error: "Failed to update order", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to update order", details: err.message });
   }
 };

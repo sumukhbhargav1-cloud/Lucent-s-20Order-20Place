@@ -87,8 +87,8 @@ export default function OrderDetail() {
     if (existing) {
       setItemsToAdd(
         itemsToAdd.map((i) =>
-          i.item_key === item.item_key ? { ...i, qty: i.qty + 1 } : i
-        )
+          i.item_key === item.item_key ? { ...i, qty: i.qty + 1 } : i,
+        ),
       );
     } else {
       setItemsToAdd([
@@ -183,7 +183,10 @@ export default function OrderDetail() {
     );
   }
 
-  const total = order.items.reduce((sum, item) => sum + item.qty * item.price, 0);
+  const total = order.items.reduce(
+    (sum, item) => sum + item.qty * item.price,
+    0,
+  );
 
   return (
     <div className="max-w-4xl mx-auto p-4 lg:p-6">
@@ -221,9 +224,7 @@ export default function OrderDetail() {
               </div>
               <div>
                 <span className="text-muted-foreground">Created:</span>
-                <p>
-                  {new Date(order.created_at).toLocaleString()}
-                </p>
+                <p>{new Date(order.created_at).toLocaleString()}</p>
               </div>
               <div>
                 <span className="text-muted-foreground">Menu Version:</span>
@@ -233,7 +234,9 @@ export default function OrderDetail() {
 
             {order.notes && (
               <div className="bg-secondary p-3 rounded mt-4">
-                <p className="text-sm text-muted-foreground">Special Requests:</p>
+                <p className="text-sm text-muted-foreground">
+                  Special Requests:
+                </p>
                 <p className="font-semibold">{order.notes}</p>
               </div>
             )}
@@ -396,11 +399,7 @@ export default function OrderDetail() {
               <Send className="w-4 h-4 mr-2" />
               Send to Kitchen
             </Button>
-            <Button
-              onClick={handlePrint}
-              variant="outline"
-              className="w-full"
-            >
+            <Button onClick={handlePrint} variant="outline" className="w-full">
               <Printer className="w-4 h-4 mr-2" />
               Print Bill
             </Button>
@@ -423,7 +422,7 @@ export default function OrderDetail() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto">
               {menuItems.map((item) => {
                 const itemInList = itemsToAdd.find(
-                  (i) => i.item_key === item.item_key
+                  (i) => i.item_key === item.item_key,
                 );
                 return (
                   <div
@@ -445,8 +444,8 @@ export default function OrderDetail() {
                               itemsToAdd.map((i) =>
                                 i.item_key === item.item_key
                                   ? { ...i, qty: i.qty - 1 }
-                                  : i
-                              )
+                                  : i,
+                              ),
                             );
                           }}
                         >
@@ -463,8 +462,8 @@ export default function OrderDetail() {
                               itemsToAdd.map((i) =>
                                 i.item_key === item.item_key
                                   ? { ...i, qty: i.qty + 1 }
-                                  : i
-                              )
+                                  : i,
+                              ),
                             );
                           }}
                         >
@@ -476,8 +475,8 @@ export default function OrderDetail() {
                           onClick={() => {
                             setItemsToAdd(
                               itemsToAdd.filter(
-                                (i) => i.item_key !== item.item_key
-                              )
+                                (i) => i.item_key !== item.item_key,
+                              ),
                             );
                           }}
                         >
@@ -518,7 +517,10 @@ export default function OrderDetail() {
                     <span>Total to Add:</span>
                     <span>
                       ₹
-                      {itemsToAdd.reduce((sum, item) => sum + item.qty * item.price, 0)}
+                      {itemsToAdd.reduce(
+                        (sum, item) => sum + item.qty * item.price,
+                        0,
+                      )}
                     </span>
                   </div>
                 </div>

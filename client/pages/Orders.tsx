@@ -87,7 +87,7 @@ export default function Orders() {
       acc[date].push(order);
       return acc;
     },
-    {} as Record<string, Order[]>
+    {} as Record<string, Order[]>,
   );
 
   return (
@@ -150,11 +150,7 @@ export default function Orders() {
             <Button onClick={handleApplyFilters} className="flex-1">
               Apply Filters
             </Button>
-            <Button
-              variant="outline"
-              onClick={handleRefresh}
-              className="px-3"
-            >
+            <Button variant="outline" onClick={handleRefresh} className="px-3">
               <RefreshCw className="w-4 h-4" />
             </Button>
           </div>
@@ -200,7 +196,7 @@ export default function Orders() {
                             <Badge
                               variant="outline"
                               className={getPaymentStatusColor(
-                                order.payment_status
+                                order.payment_status,
                               )}
                             >
                               {order.payment_status}
@@ -244,7 +240,9 @@ export default function Orders() {
                                 Time:{" "}
                               </span>
                               <span>
-                                {new Date(order.created_at).toLocaleTimeString()}
+                                {new Date(
+                                  order.created_at,
+                                ).toLocaleTimeString()}
                               </span>
                             </div>
                           </div>

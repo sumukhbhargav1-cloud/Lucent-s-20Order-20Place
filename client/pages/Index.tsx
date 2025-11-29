@@ -5,8 +5,19 @@ import { useCart } from "../hooks/useCart";
 import { MenuItem } from "@shared/api";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
 import { Trash2, Plus, Minus } from "lucide-react";
 
 export default function Index() {
@@ -22,7 +33,14 @@ export default function Index() {
     notes: "",
   });
 
-  const { items: cartItems, addItem, updateQty, removeItem, clear, total } = useCart();
+  const {
+    items: cartItems,
+    addItem,
+    updateQty,
+    removeItem,
+    clear,
+    total,
+  } = useCart();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +61,7 @@ export default function Index() {
   };
 
   const categories = Array.from(
-    new Set(menuItems.map((item) => item.category))
+    new Set(menuItems.map((item) => item.category)),
   ).sort();
 
   const handleAddToCart = (item: MenuItem) => {
@@ -119,14 +137,22 @@ export default function Index() {
           <Tabs defaultValue={categories[0] || "All"} className="w-full">
             <TabsList className="grid grid-cols-3 lg:grid-cols-2 w-full">
               {categories.map((cat) => (
-                <TabsTrigger key={cat} value={cat} className="text-xs sm:text-sm">
+                <TabsTrigger
+                  key={cat}
+                  value={cat}
+                  className="text-xs sm:text-sm"
+                >
                   {cat}
                 </TabsTrigger>
               ))}
             </TabsList>
 
             {categories.map((category) => (
-              <TabsContent key={category} value={category} className="space-y-3 mt-4">
+              <TabsContent
+                key={category}
+                value={category}
+                className="space-y-3 mt-4"
+              >
                 {menuItems
                   .filter((item) => item.category === category)
                   .map((item) => (
@@ -137,7 +163,9 @@ export default function Index() {
                       <div className="flex-1">
                         <h3 className="font-semibold">{item.name}</h3>
                         {item.description && (
-                          <p className="text-sm text-muted-foreground">{item.description}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {item.description}
+                          </p>
                         )}
                         <p className="text-lg font-bold mt-2">₹{item.price}</p>
                       </div>

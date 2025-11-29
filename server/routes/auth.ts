@@ -3,11 +3,10 @@ import { LoginRequest, LoginResponse } from "@shared/api";
 
 const ADMIN_PASSPHRASE = process.env.ADMIN_PASSPHRASE || "letmein";
 
-export const handleLogin: RequestHandler<
-  any,
-  LoginResponse,
-  LoginRequest
-> = (req, res) => {
+export const handleLogin: RequestHandler<any, LoginResponse, LoginRequest> = (
+  req,
+  res,
+) => {
   const { passphrase } = req.body;
   if (passphrase === ADMIN_PASSPHRASE) {
     return res.json({ ok: true });

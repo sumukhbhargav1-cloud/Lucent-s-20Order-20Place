@@ -31,7 +31,7 @@ export function getOrdersWithFilters(
   date?: string,
   status?: string,
   room_no?: string,
-  search?: string
+  search?: string,
 ): Order[] {
   let sql = "SELECT * FROM orders";
   const cond = [];
@@ -57,9 +57,7 @@ export function getOrdersWithFilters(
   }
 
   if (search) {
-    cond.push(
-      "(guest_name LIKE ? OR room_no LIKE ? OR order_no LIKE ?)"
-    );
+    cond.push("(guest_name LIKE ? OR room_no LIKE ? OR order_no LIKE ?)");
     const searchParam = `%${search}%`;
     params.push(searchParam, searchParam, searchParam);
   }
@@ -84,7 +82,7 @@ export function calculateOrderTotal(items: any[]): number {
 
 export function addHistoryEntry(
   history: HistoryEntry[],
-  action: string
+  action: string,
 ): HistoryEntry[] {
   history.push({
     when: new Date().toISOString(),

@@ -24,7 +24,7 @@ export const uploadMenu: RequestHandler<
 
     const insert = db.prepare(
       `INSERT INTO menus (id, version, item_key, name, description, price, category, image) 
-       VALUES (@id, @version, @item_key, @name, @description, @price, @category, @image)`
+       VALUES (@id, @version, @item_key, @name, @description, @price, @category, @image)`,
     );
 
     const insertMany = db.transaction((rows: MenuItemInput[]) => {
@@ -45,6 +45,8 @@ export const uploadMenu: RequestHandler<
     insertMany(items);
     res.json({ ok: true, count: items.length });
   } catch (err: any) {
-    res.status(500).json({ error: "Failed to upload menu", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to upload menu", details: err.message });
   }
 };

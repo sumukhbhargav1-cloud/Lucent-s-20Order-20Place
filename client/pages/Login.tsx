@@ -3,7 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 
 export default function Login() {
   const [passphrase, setPassphrase] = useState("");
@@ -36,12 +42,17 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-center text-2xl">Lucent's Resto</CardTitle>
-          <CardDescription className="text-center">Staff Order Management System</CardDescription>
+          <CardDescription className="text-center">
+            Staff Order Management System
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="passphrase" className="block text-sm font-medium mb-2">
+              <label
+                htmlFor="passphrase"
+                className="block text-sm font-medium mb-2"
+              >
                 Staff Passphrase
               </label>
               <Input
@@ -70,7 +81,8 @@ export default function Login() {
             </Button>
 
             <p className="text-xs text-muted-foreground text-center mt-4">
-              Default passphrase: <code className="bg-muted px-2 py-1 rounded">letmein</code>
+              Default passphrase:{" "}
+              <code className="bg-muted px-2 py-1 rounded">letmein</code>
             </p>
           </form>
         </CardContent>

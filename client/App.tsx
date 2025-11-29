@@ -28,9 +28,7 @@ function AppRouter() {
 
   return (
     <Routes>
-      {!isAuthenticated ? (
-        <Route path="/login" element={<Login />} />
-      ) : null}
+      {!isAuthenticated ? <Route path="/login" element={<Login />} /> : null}
 
       {isAuthenticated && (
         <>
@@ -69,7 +67,9 @@ function AppRouter() {
         </>
       )}
 
-      {!isAuthenticated && <Route path="*" element={<Navigate to="/login" replace />} />}
+      {!isAuthenticated && (
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      )}
       {isAuthenticated && <Route path="*" element={<NotFound />} />}
     </Routes>
   );

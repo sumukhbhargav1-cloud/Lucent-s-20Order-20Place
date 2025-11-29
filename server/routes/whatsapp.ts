@@ -5,7 +5,7 @@ import { addHistoryEntry } from "../utils";
 
 export const sendWhatsAppToKitchen: RequestHandler<{ id: string }> = async (
   req,
-  res
+  res,
 ) => {
   const id = req.params.id;
   const order = getOrderById(id);
@@ -27,9 +27,7 @@ export const sendWhatsAppToKitchen: RequestHandler<{ id: string }> = async (
     const twilio = await import("twilio");
     const client = twilio.default(TWILIO_SID, TWILIO_TOKEN);
 
-    const itemsText = order.items
-      .map((i) => `${i.qty} x ${i.name}`)
-      .join("\n");
+    const itemsText = order.items.map((i) => `${i.qty} x ${i.name}`).join("\n");
     const msg = `NEW ORDER: ${order.order_no}\nRoom: ${order.room_no}\nGuest: ${order.guest_name}\nItems:\n${itemsText}\nTotal: ₹${order.total}\nNotes: ${order.notes || "-"}`;
 
     await client.messages.create({
@@ -42,7 +40,7 @@ export const sendWhatsAppToKitchen: RequestHandler<{ id: string }> = async (
     history = addHistoryEntry(history, "WhatsApp sent to kitchen");
     db.prepare("UPDATE orders SET history = ? WHERE id = ?").run(
       JSON.stringify(history),
-      id
+      id,
     );
 
     res.json({ ok: true });
@@ -65,7 +63,7 @@ export const printBill: RequestHandler<{ id: string }> = (req, res) => {
   const itemsHtml = order.items
     .map(
       (i) =>
-        `<tr><td>${i.name}</td><td style="text-align:center">${i.qty}</td><td style="text-align:right">₹${i.price}</td><td style="text-align:right">₹${i.qty * i.price}</td></tr>`
+        `<tr><td>${i.name}</td><td style="text-align:center">${i.qty}</td><td style="text-align:right">₹${i.price}</td><td style="text-align:right">₹${i.qty * i.price}</td></tr>`,
     )
     .join("");
 

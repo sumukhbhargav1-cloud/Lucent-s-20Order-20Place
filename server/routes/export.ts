@@ -6,9 +6,7 @@ export const exportCSV: RequestHandler = (req, res) => {
   const { date } = req.query;
 
   if (!date) {
-    return res
-      .status(400)
-      .json({ error: "date required (YYYY-MM-DD)" });
+    return res.status(400).json({ error: "date required (YYYY-MM-DD)" });
   }
 
   try {
@@ -19,7 +17,7 @@ export const exportCSV: RequestHandler = (req, res) => {
 
     const rows = db
       .prepare(
-        "SELECT * FROM orders WHERE created_at BETWEEN ? AND ? ORDER BY created_at"
+        "SELECT * FROM orders WHERE created_at BETWEEN ? AND ? ORDER BY created_at",
       )
       .all(start.toISOString(), end.toISOString()) as Order[];
 
@@ -31,21 +29,21 @@ export const exportCSV: RequestHandler = (req, res) => {
       const items = db
         .prepare("SELECT qty,name FROM order_items WHERE order_id = ?")
         .all(r.id) as any[];
-      const itemsStr = items
-        .map((x) => `${x.qty}x ${x.name}`)
-        .join("|");
+      const itemsStr = items.map((x) => `${x.qty}x ${x.name}`).join("|");
       lines.push(
-        `"${r.order_no}","${r.created_at}","${r.guest_name}","${r.room_no}",${r.total},"${r.status}","${r.payment_status}","${itemsStr}"`
+        `"${r.order_no}","${r.created_at}","${r.guest_name}","${r.room_no}",${r.total},"${r.status}","${r.payment_status}","${itemsStr}"`,
       );
     }
 
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="orders-${date}.csv"`
+      `attachment; filename="orders-${date}.csv"`,
     );
     res.setHeader("Content-Type", "text/csv");
     res.send(lines.join("\n"));
   } catch (err: any) {
-    res.status(500).json({ error: "Failed to export CSV", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to export CSV", details: err.message });
   }
 };

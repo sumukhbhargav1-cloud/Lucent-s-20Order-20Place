@@ -17,7 +17,7 @@ function getHeaders() {
 
 export async function apiCall<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const response = await fetch(endpoint, {
     ...options,
@@ -36,7 +36,9 @@ export async function apiCall<T>(
 }
 
 // Menu API
-export async function getMenu(version: string = "RestoVersion"): Promise<MenuItem[]> {
+export async function getMenu(
+  version: string = "RestoVersion",
+): Promise<MenuItem[]> {
   return apiCall(`/api/menu/${version}`);
 }
 
@@ -75,7 +77,7 @@ export async function listOrders(params?: {
 
 export async function addItemsToOrder(
   id: string,
-  items: Array<{ item_key: string; name: string; qty: number; price: number }>
+  items: Array<{ item_key: string; name: string; qty: number; price: number }>,
 ): Promise<Order> {
   return apiCall(`/api/orders/${id}/items`, {
     method: "POST",
@@ -90,7 +92,7 @@ export async function updateOrder(
     payment_status?: string;
     requested_time?: string;
     notes?: string;
-  }
+  },
 ): Promise<Order> {
   return apiCall(`/api/orders/${id}`, {
     method: "PUT",
@@ -98,7 +100,9 @@ export async function updateOrder(
   });
 }
 
-export async function sendWhatsAppToKitchen(id: string): Promise<{ ok: boolean }> {
+export async function sendWhatsAppToKitchen(
+  id: string,
+): Promise<{ ok: boolean }> {
   return apiCall(`/api/orders/${id}/send-whatsapp`, {
     method: "POST",
     body: JSON.stringify({}),
@@ -112,9 +116,12 @@ export function getPrintBillUrl(id: string): string {
 
 export async function exportOrders(date: string): Promise<Blob> {
   const passphrase = getPassphrase();
-  const response = await fetch(`/api/export/csv?date=${date}${passphrase ? `&pass=${passphrase}` : ""}`, {
-    headers: getHeaders(),
-  });
+  const response = await fetch(
+    `/api/export/csv?date=${date}${passphrase ? `&pass=${passphrase}` : ""}`,
+    {
+      headers: getHeaders(),
+    },
+  );
 
   if (!response.ok) {
     throw new Error("Failed to export orders");

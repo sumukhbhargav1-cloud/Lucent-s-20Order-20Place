@@ -53,11 +53,7 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Desktop Logout */}
             <div className="hidden lg:block">
-              <Button
-                onClick={logout}
-                variant="outline"
-                size="sm"
-              >
+              <Button onClick={logout} variant="outline" size="sm">
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
               </Button>
