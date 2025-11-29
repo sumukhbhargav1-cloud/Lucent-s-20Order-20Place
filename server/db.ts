@@ -1,49 +1,151 @@
-import path from "path";
-import { fileURLToPath } from "url";
+import initSqlJs, { Database as SqlJsDatabase } from "sql.js";
 import { v4 as uuidv4 } from "uuid";
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_FILE = process.env.DB_FILE || path.join(__dirname, "data.db");
 
-let dbInstance: any = null;
+let dbInstance: SqlJsDatabase | null = null;
 
-async function initializeDatabaseImpl() {
+export interface PreparedStatement {
+  run(...params: any[]): any;
+  get(...params: any[]): any;
+  all(...params: any[]): any[];
+}
+
+export interface DatabaseWrapper {
+  prepare(sql: string): PreparedStatement;
+  exec(sql: string): void;
+  transaction(fn: (items: any[]) => void): (items: any[]) => void;
+}
+
+// Create a wrapper that mimics better-sqlite3 API
+function createStatementWrapper(db: SqlJsDatabase, sql: string): PreparedStatement {
+  return {
+    run(...params: any[]): any {
+      try {
+        db.run(sql, params);
+        return { changes: db.getRowsModified() };
+      } catch (err) {
+        throw err;
+      }
+    },
+    get(...params: any[]): any {
+      try {
+        const stmt = db.prepare(sql);
+        stmt.bind(params);
+        if (stmt.step()) {
+          const row = stmt.getAsObject();
+          stmt.free();
+          return row;
+        }
+        stmt.free();
+        return undefined;
+      } catch (err) {
+        throw err;
+      }
+    },
+    all(...params: any[]): any[] {
+      try {
+        const stmt = db.prepare(sql);
+        stmt.bind(params);
+        const results: any[] = [];
+        while (stmt.step()) {
+          results.push(stmt.getAsObject());
+        }
+        stmt.free();
+        return results;
+      } catch (err) {
+        throw err;
+      }
+    },
+  };
+}
+
+function createDbWrapper(sqlDb: SqlJsDatabase): DatabaseWrapper {
+  return {
+    prepare(sql: string): PreparedStatement {
+      return createStatementWrapper(sqlDb, sql);
+    },
+    exec(sql: string): void {
+      sqlDb.run(sql);
+    },
+    transaction(fn: (items: any[]) => void) {
+      return (items: any[]) => {
+        sqlDb.run("BEGIN TRANSACTION");
+        try {
+          fn(items);
+          sqlDb.run("COMMIT");
+        } catch (err) {
+          sqlDb.run("ROLLBACK");
+          throw err;
+        }
+      };
+    },
+  };
+}
+
+async function initializeDatabaseImpl(): Promise<DatabaseWrapper | null> {
   try {
-    // Use dynamic import to load better-sqlite3
-    const DatabaseModule = await import("better-sqlite3");
-    const Database = DatabaseModule.default;
-    dbInstance = new Database(DB_FILE);
-    return dbInstance;
+    const SQL = await initSqlJs();
+
+    let sqlDb: SqlJsDatabase;
+
+    // Try to load existing database
+    if (fs.existsSync(DB_FILE)) {
+      try {
+        const data = fs.readFileSync(DB_FILE);
+        sqlDb = new SQL.Database(data);
+      } catch (err) {
+        console.warn("Could not load existing database, creating new one");
+        sqlDb = new SQL.Database();
+      }
+    } else {
+      sqlDb = new SQL.Database();
+    }
+
+    dbInstance = sqlDb;
+    return createDbWrapper(sqlDb);
   } catch (err: any) {
-    console.error(
-      "Warning: Could not initialize SQLite database:",
-      err.message,
-    );
+    console.error("Warning: Could not initialize SQLite database:", err.message);
     return null;
   }
 }
 
-// Initialize on module load
-let initPromise: Promise<any> | null = null;
+let initPromise: Promise<DatabaseWrapper | null> | null = null;
 
-export async function ensureDbInitialized() {
+export async function ensureDbInitialized(): Promise<DatabaseWrapper | null> {
   if (!initPromise) {
     initPromise = initializeDatabaseImpl();
   }
   return initPromise;
 }
 
-// Sync getter for routes
-export function getDb() {
-  if (!dbInstance) {
-    throw new Error(
-      "Database not initialized yet. Call ensureDbInitialized() first.",
-    );
+export async function getDb(): Promise<DatabaseWrapper> {
+  const db = await ensureDbInitialized();
+  if (!db) {
+    throw new Error("Database not initialized");
   }
-  return dbInstance;
+  return db;
 }
 
-export { getDb as db };
+// For routes that expect synchronous db access, provide a lazy proxy
+export const db = new Proxy(
+  {},
+  {
+    get(_, prop: string | symbol) {
+      return (...args: any[]) => {
+        if (!dbInstance) {
+          throw new Error("Database not initialized");
+        }
+        const wrapper = createDbWrapper(dbInstance);
+        return (wrapper as any)[prop](...args);
+      };
+    },
+  }
+) as DatabaseWrapper;
 
 export async function initializeDatabase() {
   const db = await ensureDbInitialized();
@@ -94,18 +196,28 @@ export async function initializeDatabase() {
     `);
 
     // Seed sample menu if empty
-    const menuCount = db
-      .prepare("SELECT COUNT(*) as count FROM menus")
-      .get() as any;
-    if (menuCount.count === 0) {
+    const menuCountStmt = db.prepare("SELECT COUNT(*) as count FROM menus");
+    const menuCount = menuCountStmt.get() as any;
+    if (!menuCount || menuCount.count === 0) {
       seedSampleMenu(db);
+    }
+
+    // Save to disk
+    if (dbInstance) {
+      try {
+        const data = dbInstance.export();
+        const buffer = Buffer.from(data);
+        fs.writeFileSync(DB_FILE, buffer);
+      } catch (err) {
+        console.error("Could not save database to disk:", err);
+      }
     }
   } catch (err) {
     console.error("Error during database initialization:", err);
   }
 }
 
-function seedSampleMenu(db: any) {
+function seedSampleMenu(db: DatabaseWrapper) {
   const items = [
     {
       item_key: "paneer_tikka",
@@ -154,25 +266,32 @@ function seedSampleMenu(db: any) {
   try {
     const insert = db.prepare(
       `INSERT INTO menus (id, version, item_key, name, description, price, category, image) 
-       VALUES (@id, @version, @item_key, @name, @description, @price, @category, @image)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     );
 
-    const insertMany = db.transaction((rows: any[]) => {
-      for (const r of rows) {
-        insert.run({
-          id: uuidv4(),
-          version: "RestoVersion",
-          item_key: r.item_key,
-          name: r.name,
-          description: r.description,
-          price: r.price,
-          category: r.category,
-          image: "",
-        });
-      }
-    });
+    for (const r of items) {
+      insert.run(
+        uuidv4(),
+        "RestoVersion",
+        r.item_key,
+        r.name,
+        r.description,
+        r.price,
+        r.category,
+        ""
+      );
+    }
 
-    insertMany(items);
+    // Save to disk after seeding
+    if (dbInstance) {
+      try {
+        const data = dbInstance.export();
+        const buffer = Buffer.from(data);
+        fs.writeFileSync(DB_FILE, buffer);
+      } catch (err) {
+        console.error("Could not save database to disk:", err);
+      }
+    }
   } catch (err) {
     console.error("Error seeding menu:", err);
   }
