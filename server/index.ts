@@ -1,7 +1,18 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { handleDemo } from "./routes/demo";
+import { initializeDatabase } from "./db";
+import { requireAuth, handleLogin } from "./routes/auth";
+import { getMenu, uploadMenu } from "./routes/menu";
+import {
+  createOrder,
+  getOrder,
+  listOrders,
+  addItemsToOrder,
+  updateOrder,
+} from "./routes/orders";
+import { sendWhatsAppToKitchen, printBill } from "./routes/whatsapp";
+import { exportCSV } from "./routes/export";
 
 export function createServer() {
   const app = express();
@@ -11,13 +22,32 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Example API routes
-  app.get("/api/ping", (_req, res) => {
-    const ping = process.env.PING_MESSAGE ?? "ping";
-    res.json({ message: ping });
-  });
+  // Initialize database
+  initializeDatabase();
 
-  app.get("/api/demo", handleDemo);
+  // ========== Authentication ==========
+  app.post("/api/login", handleLogin);
+
+  // ========== Menu ==========
+  app.get("/api/menu/:version", requireAuth, getMenu);
+  app.post("/api/menu/:version", requireAuth, uploadMenu);
+
+  // ========== Orders ==========
+  app.post("/api/orders", requireAuth, createOrder);
+  app.get("/api/orders", requireAuth, listOrders);
+  app.get("/api/orders/:id", requireAuth, getOrder);
+  app.post("/api/orders/:id/items", requireAuth, addItemsToOrder);
+  app.put("/api/orders/:id", requireAuth, updateOrder);
+
+  // ========== WhatsApp & Print ==========
+  app.post("/api/orders/:id/send-whatsapp", requireAuth, sendWhatsAppToKitchen);
+  app.get("/api/orders/:id/print", requireAuth, printBill);
+
+  // ========== Export ==========
+  app.get("/api/export/csv", requireAuth, exportCSV);
+
+  // ========== Health Check ==========
+  app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
   return app;
 }
