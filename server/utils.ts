@@ -1,9 +1,5 @@
-import { getDb } from "./db";
+import { db } from "./db";
 import { Order, OrderItem, HistoryEntry } from "@shared/api";
-
-async function getDatabase() {
-  return getDb();
-}
 
 export function makeOrderNo(): string {
   const d = new Date();
