@@ -1,6 +1,7 @@
 import Database from "better-sqlite3";
 import path from "path";
 import { fileURLToPath } from "url";
+import { v4 as uuidv4 } from "uuid";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_FILE = process.env.DB_FILE || path.join(__dirname, "data.db");
