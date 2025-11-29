@@ -14,6 +14,8 @@ import {
 import { sendWhatsAppToKitchen, printBill } from "./routes/whatsapp";
 import { exportCSV } from "./routes/export";
 
+let initialized = false;
+
 export function createServer() {
   const app = express();
 
@@ -22,8 +24,18 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Initialize database
-  initializeDatabase();
+  // Initialize database on first request
+  app.use((req, res, next) => {
+    if (!initialized) {
+      try {
+        initializeDatabase();
+        initialized = true;
+      } catch (err) {
+        console.error("Failed to initialize database:", err);
+      }
+    }
+    next();
+  });
 
   // ========== Authentication ==========
   app.post("/api/login", handleLogin);
