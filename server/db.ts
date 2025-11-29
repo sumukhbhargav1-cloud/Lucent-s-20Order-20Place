@@ -58,8 +58,6 @@ export function initializeDatabase() {
 }
 
 function seedSampleMenu() {
-  const { v4: uuidv4 } = await import("uuid");
-
   const items = [
     {
       item_key: "paneer_tikka",
