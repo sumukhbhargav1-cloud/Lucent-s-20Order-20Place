@@ -184,48 +184,92 @@ export async function initializeDatabase() {
 
 function seedSampleMenu(database: any) {
   const items = [
-    {
-      item_key: "paneer_tikka",
-      name: "Paneer Tikka Masala",
-      price: 255,
-      category: "Main",
-      description: "Cottage cheese in rich gravy",
-    },
-    {
-      item_key: "garlic_fried_rice",
-      name: "Garlic Fried Rice",
-      price: 180,
-      category: "Rice",
-      description: "Aromatic rice with garlic",
-    },
-    {
-      item_key: "veg_biryani",
-      name: "Veg Biryani",
-      price: 220,
-      category: "Rice",
-      description: "Fragrant rice with vegetables",
-    },
-    {
-      item_key: "butter_chicken",
-      name: "Butter Chicken",
-      price: 285,
-      category: "Main",
-      description: "Tender chicken in creamy tomato sauce",
-    },
-    {
-      item_key: "dal_makhani",
-      name: "Dal Makhani",
-      price: 200,
-      category: "Main",
-      description: "Creamy black lentil curry",
-    },
-    {
-      item_key: "naan",
-      name: "Naan",
-      price: 60,
-      category: "Bread",
-      description: "Traditional Indian flatbread",
-    },
+    // SOUPS
+    { item_key: "baby_corn_soup", name: "Baby Corn Soup", price: 100, category: "Soups", description: "Hot & healthy" },
+    { item_key: "hot_sour_soup", name: "Hot & Sour Soup", price: 120, category: "Soups", description: "Tangy & spicy" },
+    { item_key: "tomato_soup", name: "Tomato Soup", price: 100, category: "Soups", description: "Fresh & warm" },
+    { item_key: "veg_cheese_soup", name: "Veg Cheese Soup", price: 120, category: "Soups", description: "Creamy delight" },
+    { item_key: "burnt_garlic_soup", name: "Burnt Garlic Soup", price: 100, category: "Soups", description: "Bold flavor" },
+    { item_key: "broccoli_soup", name: "Broccoli Soup", price: 120, category: "Soups", description: "Healthy greens" },
+
+    // SALADS
+    { item_key: "kachumber_salad", name: "Kachumber Salad", price: 40, category: "Salads", description: "Fresh vegetables" },
+    { item_key: "green_salad", name: "Green Salad", price: 40, category: "Salads", description: "Crispy greens" },
+    { item_key: "italian_pasta_salad", name: "Italian Pasta Salad", price: 80, category: "Salads", description: "Mediterranean style" },
+    { item_key: "veg_russian_salad", name: "Veg Russian Salad", price: 50, category: "Salads", description: "Mixed vegetables" },
+    { item_key: "nut_salad", name: "Nut Salad", price: 50, category: "Salads", description: "Protein rich" },
+    { item_key: "coleslaw_salad", name: "ColeSlaw Salad", price: 50, category: "Salads", description: "Crunchy delight" },
+
+    // STARTERS (Fried)
+    { item_key: "gobi_manchurian", name: "Gobi Manchurian", price: 140, category: "Starters", description: "Crispy cauliflower" },
+    { item_key: "paneer_pepper_dry", name: "Paneer - Pepper Dry", price: 150, category: "Starters", description: "Paneer with peppers" },
+    { item_key: "aloo_pepper_dry", name: "Aloo - Pepper Dry", price: 150, category: "Starters", description: "Potato with peppers" },
+    { item_key: "gobi_pepper_dry", name: "Gobi - Pepper Dry", price: 150, category: "Starters", description: "Cauliflower with peppers" },
+    { item_key: "paneer_chilly", name: "Paneer - Chilly", price: 140, category: "Starters", description: "Spicy paneer" },
+    { item_key: "aloo_chilly", name: "Aloo - Chilly", price: 140, category: "Starters", description: "Spicy potatoes" },
+    { item_key: "gobi_chilly", name: "Gobi - Chilly", price: 140, category: "Starters", description: "Spicy cauliflower" },
+    { item_key: "golden_fried_baby_corn", name: "Golden Fried Baby Corn", price: 180, category: "Starters", description: "Golden & crispy" },
+    { item_key: "mushroom_dry", name: "Mushroom Dry", price: 180, category: "Starters", description: "Sautéed mushroom" },
+    { item_key: "mushroom_chilly", name: "Mushroom Chilly", price: 180, category: "Starters", description: "Spicy mushroom" },
+    { item_key: "veg_chilly", name: "Veg Chilly", price: 120, category: "Starters", description: "Mixed veg spicy" },
+    { item_key: "veg_dry", name: "Veg Dry", price: 120, category: "Starters", description: "Mixed veg sautéed" },
+    { item_key: "baby_corn_schezwaan", name: "Baby Corn Schezwaan", price: 140, category: "Starters", description: "Baby corn with schezwaan sauce" },
+    { item_key: "paneer_schezwaan", name: "Paneer Schezwaan", price: 140, category: "Starters", description: "Paneer with schezwaan sauce" },
+
+    // BREADS
+    { item_key: "aloo_parata", name: "Aloo Stuffed Parata (Per Plate)", price: 120, category: "Breads", description: "Potato filled flatbread" },
+    { item_key: "mirch_parata", name: "Mirch Parata (Per Plate)", price: 120, category: "Breads", description: "Chili filled flatbread" },
+    { item_key: "pudina_parata", name: "Pudina Parata (Per Plate)", price: 120, category: "Breads", description: "Mint filled flatbread" },
+    { item_key: "methi_parata", name: "Methi Parata (Per Plate)", price: 120, category: "Breads", description: "Fenugreek filled flatbread" },
+    { item_key: "paneer_parata", name: "Paneer Stuffed Parata (Per Plate)", price: 150, category: "Breads", description: "Paneer filled flatbread" },
+    { item_key: "roti", name: "Roti (Per Piece)", price: 30, category: "Breads", description: "Indian wheat bread" },
+    { item_key: "chapathi", name: "Chapathi (Per Piece)", price: 30, category: "Breads", description: "Soft wheat bread" },
+    { item_key: "normal_parata", name: "Normal Parata (Per Piece)", price: 40, category: "Breads", description: "Plain flatbread" },
+    { item_key: "maida_chapathi", name: "White Maida Chapathi (Per Piece)", price: 40, category: "Breads", description: "Soft white bread" },
+
+    // GRAVY/CURRY
+    { item_key: "paneer_tikka_masala", name: "Paneer Tikka Masala", price: 255, category: "Gravy/Curry", description: "Cottage cheese in rich tomato gravy" },
+    { item_key: "dal_makhani", name: "Dal Makhani", price: 155, category: "Gravy/Curry", description: "Creamy black lentil curry" },
+    { item_key: "shahi_paneer", name: "Shahi Paneer", price: 215, category: "Gravy/Curry", description: "Paneer in royal gravy" },
+    { item_key: "dal_tadka", name: "Dal Tadka", price: 145, category: "Gravy/Curry", description: "Tempered lentil curry" },
+    { item_key: "palak_paneer", name: "Palak Paneer", price: 215, category: "Gravy/Curry", description: "Paneer with spinach" },
+    { item_key: "mixed_veg", name: "Mixed Veg", price: 145, category: "Gravy/Curry", description: "Mixed vegetable curry" },
+    { item_key: "paneer_kadai", name: "Paneer Kadai", price: 215, category: "Gravy/Curry", description: "Paneer with onions & peppers" },
+    { item_key: "matar_mushroom", name: "Matar Mushroom", price: 215, category: "Gravy/Curry", description: "Peas & mushroom curry" },
+    { item_key: "veg_kolhapuri", name: "Veg Kolhapuri", price: 155, category: "Gravy/Curry", description: "Spicy vegetable curry" },
+
+    // CHINESE
+    { item_key: "schezwaan_fried_rice", name: "Schezwaan Fried Rice", price: 199, category: "Chinese", description: "Spicy fried rice" },
+    { item_key: "schezwaan_noodles", name: "Schezwaan Noodles", price: 199, category: "Chinese", description: "Spicy noodles" },
+    { item_key: "masala_noodles", name: "Masala Noodles", price: 180, category: "Chinese", description: "Spiced noodles" },
+    { item_key: "masala_pasta", name: "Masala Pasta", price: 180, category: "Chinese", description: "Spiced pasta" },
+    { item_key: "white_sauce_pasta", name: "White Sauce Pasta", price: 215, category: "Chinese", description: "Creamy pasta" },
+    { item_key: "white_sauce_noodles", name: "White Sauce Noodles", price: 215, category: "Chinese", description: "Creamy noodles" },
+    { item_key: "fried_rice", name: "Fried Rice", price: 180, category: "Chinese", description: "Basic fried rice" },
+    { item_key: "garlic_fried_rice", name: "Garlic Fried Rice", price: 180, category: "Chinese", description: "Aromatic rice with garlic" },
+    { item_key: "shanghai_fried_rice", name: "Shanghai Fried Rice", price: 199, category: "Chinese", description: "Shanghai style rice" },
+    { item_key: "chinese_chopsuey", name: "Chinese Chopsuey", price: 215, category: "Chinese", description: "Mixed vegetables stir fry" },
+
+    // RICE SPECIAL
+    { item_key: "hyderabadi_biryani", name: "Hyderabadi Biryani", price: 215, category: "Rice Special", description: "Fragrant rice dish" },
+    { item_key: "veg_biryani", name: "Veg Biryani", price: 215, category: "Rice Special", description: "Vegetable biryani" },
+    { item_key: "dal_kichidi", name: "Dal Kichidi", price: 180, category: "Rice Special", description: "Lentil & rice" },
+    { item_key: "ghee_rice", name: "Ghee Rice", price: 180, category: "Rice Special", description: "Fragrant ghee rice" },
+    { item_key: "jeera_rice", name: "Jeera Rice", price: 180, category: "Rice Special", description: "Cumin flavored rice" },
+    { item_key: "mushroom_biryani", name: "Mushroom Biryani", price: 215, category: "Rice Special", description: "Mushroom biryani" },
+    { item_key: "lemon_rice", name: "Lemon Rice", price: 120, category: "Rice Special", description: "Tangy rice" },
+    { item_key: "puliogere", name: "Puliogere", price: 120, category: "Rice Special", description: "South Indian tamarind rice" },
+    { item_key: "soya_chunks_biryani", name: "Soya Chunks Biryani", price: 215, category: "Rice Special", description: "Protein rich biryani" },
+    { item_key: "paneer_biryani", name: "Paneer Biryani", price: 215, category: "Rice Special", description: "Paneer biryani" },
+
+    // MALNAD SPECIAL
+    { item_key: "south_indian_meal", name: "South Indian Meal (Min 4)", price: 210, category: "Malnad Special", description: "Complete meal with multiple items" },
+    { item_key: "rice_thalipattu", name: "Rice Thalipattu", price: 100, category: "Malnad Special", description: "Rice preparation" },
+    { item_key: "rava_dosa", name: "Rava Dosa", price: 120, category: "Malnad Special", description: "Semolina crepe" },
+    { item_key: "pathrode", name: "Pathrode", price: 120, category: "Malnad Special", description: "Steamed colocasia roll" },
+    { item_key: "poha", name: "Poha", price: 80, category: "Malnad Special", description: "Flattened rice" },
+    { item_key: "neer_dosa", name: "Neer Dosa", price: 120, category: "Malnad Special", description: "Thin crepe" },
+    { item_key: "dosa", name: "Dosa (Varieties Available)", price: 80, category: "Malnad Special", description: "Crispy crepe" },
   ];
 
   try {
