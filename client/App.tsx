@@ -1,5 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useEffect } from "react-router-dom";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 import { CartProvider } from "./hooks/useCart";
 import Layout from "./components/Layout";
@@ -12,19 +11,13 @@ import OrderDetail from "./pages/OrderDetail";
 import Audit from "./pages/Audit";
 import NotFound from "./pages/NotFound";
 
-// Redirect handler for GitHub Pages SPA routing
-function RedirectHandler() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const redirect = sessionStorage.redirect;
-    if (redirect) {
-      delete sessionStorage.redirect;
-      navigate(redirect, { replace: true });
-    }
-  }, [navigate]);
-
-  return null;
+// Handle GitHub Pages 404 redirect for SPA routing
+// This runs once when the app module loads
+if (typeof window !== "undefined" && sessionStorage.redirect) {
+  const redirect = sessionStorage.redirect;
+  delete sessionStorage.redirect;
+  // Store for use after router mounts
+  (window as any).__redirectPath = redirect;
 }
 
 // Protected Route Component
