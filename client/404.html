@@ -5,18 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lucent's Resto - Staff Order Management</title>
     <script>
-      // Redirect all 404s to the index.html with the path preserved
-      // This allows React Router to handle the routing
-      var path = window.location.pathname;
-      if (path !== '/' && !path.includes('.')) {
-        // Store the intended path and redirect to root
-        sessionStorage.redirect = path;
-        window.location = '/';
+      // GitHub Pages 404 redirect for SPA
+      // When a route doesn't exist, GitHub Pages serves this 404.html
+      // We capture the missing path and redirect to root so React Router can handle it
+      var pathSegments = window.location.pathname.split('/').filter(function(p) { return p; });
+      if (pathSegments.length) {
+        sessionStorage.redirect = window.location.pathname + window.location.search;
+        window.location.replace('/');
       }
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/client/main.tsx"></script>
   </body>
 </html>
