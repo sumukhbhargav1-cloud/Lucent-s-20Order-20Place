@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate, useEffect } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 import { CartProvider } from "./hooks/useCart";
 import Layout from "./components/Layout";
