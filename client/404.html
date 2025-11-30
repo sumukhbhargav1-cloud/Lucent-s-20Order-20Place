@@ -8,10 +8,15 @@
       // GitHub Pages 404 redirect for SPA
       // When a route doesn't exist, GitHub Pages serves this 404.html
       // We capture the missing path and redirect to root so React Router can handle it
-      var pathSegments = window.location.pathname.split('/').filter(function(p) { return p; });
+      var pathSegments = window.location.pathname
+        .split("/")
+        .filter(function (p) {
+          return p;
+        });
       if (pathSegments.length) {
-        sessionStorage.redirect = window.location.pathname + window.location.search;
-        window.location.replace('/');
+        sessionStorage.redirect =
+          window.location.pathname + window.location.search;
+        window.location.replace("/");
       }
     </script>
   </head>
