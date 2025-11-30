@@ -7,16 +7,16 @@
     <script>
       // GitHub Pages 404 redirect for SPA
       // When a route doesn't exist, GitHub Pages serves this 404.html
-      // We capture the missing path and redirect to root so React Router can handle it
+      // We capture the missing path and redirect to the app so React Router can handle it
       var pathSegments = window.location.pathname
         .split("/")
         .filter(function (p) {
           return p;
         });
-      if (pathSegments.length) {
-        sessionStorage.redirect =
-          window.location.pathname + window.location.search;
-        window.location.replace("/");
+      // Store the redirect path for the app to pick up
+      if (pathSegments.length > 1 || (pathSegments.length === 1 && pathSegments[0] !== "Lucent-s-20Order-20Place")) {
+        (window as any).__redirectPath = window.location.pathname + window.location.search;
+        window.location.replace(window.location.pathname.split('/Lucent-s-20Order-20Place')[0] + '/Lucent-s-20Order-20Place/');
       }
     </script>
   </head>
