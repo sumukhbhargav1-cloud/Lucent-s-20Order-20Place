@@ -4,7 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: process.env.GITHUB_PAGES ? '/Lucent-s-20Order-20Place/' : '/',
+  base: process.env.GITHUB_PAGES ? "/Lucent-s-20Order-20Place/" : "/",
   server: {
     host: "::",
     port: 8080,
