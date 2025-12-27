@@ -2,7 +2,6 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { initializeDatabase } from "./db";
-import { requireAuth, handleLogin } from "./routes/auth";
 import { getMenu, uploadMenu } from "./routes/menu";
 import {
   createOrder,
